@@ -1,0 +1,41 @@
+<main class="page-shell">
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Statement Validator home"><span class="brand-mark">SV</span><span>Statement Validator</span></a>
+    <span class="local-badge"><i></i> Secure document review</span>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">TRADE DOCUMENT WORKSPACE</div>
+    <h1>Validate a trading statement</h1>
+    <p>Enter the account details you expect to see, then upload a statement. The service checks the file, account, and trades before extracting the results.</p>
+  </section>
+
+  <section class="pipeline" aria-label="Validation stages">
+    <div class="pipeline-step"><span class="step-number">01</span><span><b>File check</b><small>Trading statement?</small></span></div>
+    <div class="pipeline-step"><span class="step-number">02</span><span><b>Account match</b><small>Details verified?</small></span></div>
+    <div class="pipeline-step"><span class="step-number">03</span><span><b>Trade check</b><small>Executed trades?</small></span></div>
+    <div class="pipeline-step"><span class="step-number">04</span><span><b>Extraction</b><small>Structured results</small></span></div>
+  </section>
+
+  <section class="form-card">
+    <div class="card-heading"><div><h2>Statement details</h2><p>These details are used to check that the uploaded statement belongs to the expected account.</p></div><span class="required-note">All fields required</span></div>
+    <form #statementForm="ngForm" (ngSubmit)="submit()">
+      <div class="field-grid">
+        <label class="field"><span>Account number</span><input name="accountNumber" [(ngModel)]="accountNumber" required autocomplete="off" placeholder="Enter account number" /></label>
+        <label class="field"><span>Account holder name</span><input name="accountName" [(ngModel)]="accountName" required autocomplete="name" placeholder="Name as shown on the account" /></label>
+        <label class="field full"><span>Statement period</span><input name="statementPeriod" [(ngModel)]="statementPeriod" required placeholder="For example, 01 Jan 2025 – 31 Mar 2025" /></label>
+      </div>
+      <div class="upload-area">
+        <div class="upload-icon" aria-hidden="true">↑</div>
+        <div class="upload-copy"><b>Attach your statement</b><span>PDF or image · up to 20 MB</span></div>
+        <label class="choose-file">Browse files<input type="file" accept="application/pdf,image/*" (change)="onFileSelected($event)" /></label>
+        @if (selectedFile) { <div class="file-chip"><span class="file-icon">▤</span><span><b>{{ selectedFile.name }}</b><small>{{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB</small></span><button class="remove-file" type="button" aria-label="Remove selected file" (click)="selectedFile = null">×</button></div> }
+      </div>
+      @if (error) { <div class="alert error" role="alert">{{ error }}</div> }
+      <div class="submit-row"><span class="privacy-note">Your file is processed by the connected validation service.</span><button class="submit-button" type="submit" [disabled]="busy || !statementForm.valid || !selectedFile">{{ busy ? 'Validating…' : 'Upload and validate' }} <span>→</span></button></div>
+    </form>
+  </section>
+
+  @if (result) { <section class="result-card"><div class="result-title"><h2>Validation result</h2><span class="result-status">Response received</span></div><pre>{{ result | json }}</pre></section> }
+  <footer>Trading Statement Validator <span>·</span> Powered by Vertex AI</footer>
+</main>
